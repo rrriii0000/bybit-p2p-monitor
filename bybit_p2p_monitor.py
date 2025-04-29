@@ -10,7 +10,7 @@ Bybit P2P Monitor
   BYBIT_KEY           Bybit API Key (Read-only) – 公開広告の取得だけなら無くてもOK
   BYBIT_SECRET        Bybit API Secret
   REVOLUT_PM_IDS      Revolut決済のpayment IDをカンマ区切りで指定 (デフォルト: 377)
-  INTERVAL_SEC        ポーリング間隔(秒) デフォルト: 30
+  INTERVAL_SEC        ポーリング間隔(秒) デフォルト: 120
 """
 
 import os
@@ -53,7 +53,7 @@ rules: List[Dict] = [
     dict(currency="JPY", side="0", max_price=140),   # JPY: 買い ≤140
     dict(currency="JPY", side="1", min_price=165),   # JPY: 売り ≥165
     dict(currency="EUR", side="0", max_price=0.863), # EUR: 買い ≤0.863
-    dict(currency="EUR", side="1", min_price=1.0),   # EUR: 売り ≥1.0
+    dict(currency="EUR", side="1", min_price=0.7),   # EUR: 売り ≥1.0
     dict(currency="USD", side="0", max_price=0.9),   # USD: 買い ≤0.9
     dict(currency="USD", side="1", min_price=1.2),   # USD: 売り ≥1.2
     dict(currency="GBP", side="0", max_price=0.75),  # GBP: 買い ≤0.75
