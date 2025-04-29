@@ -106,6 +106,20 @@ def check_rule(rule: Dict):
 
 
 def main():
+    # ここで必ず１回だけテスト通知
+    try:
+        bot.send_message(chat_id=TG_CHAT_ID, text="🚀 モニタースタート通知（本番環境テスト）")
+        logging.debug("[STARTUP TEST] sent startup notification")
+    except Exception as e:
+        logging.error(f"[STARTUP TEST ERROR] {e}")
+
+    logging.info("Started monitor…")
+    logging.debug("=== monitor loop START ===")
+    while True:
+        for rule in rules:
+            check_rule(rule)
+        time.sleep(INTERVAL)
+
     logging.info("Started monitor…")
     logging.debug("=== monitor loop START ===")
     while True:
