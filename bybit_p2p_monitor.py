@@ -24,7 +24,9 @@ from telegram import Bot
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-TG_TOKEN = os.environ['TG_TOKEN']
+
+
+TG_TOKEN  = os.environ['TG_TOKEN']  
 TG_CHAT_ID = os.environ['TG_CHAT_ID']
 BYBIT_KEY = os.getenv('BYBIT_KEY')
 BYBIT_SECRET = os.getenv('BYBIT_SECRET')
@@ -103,3 +105,38 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+import datetime
+
+def check_rule(rule: Dict):
+    currency, side = rule['currency'], rule['side']
+    logging.info(f"[{datetime.datetime.now()}] ★ Check rule start: {rule}")
+    try:
+        res = api.get_online_ads(tokenId="USDT", currencyId=currency, side=side)
+        items = res['result']['items']
+    except Exception as e:
+        logging.warning(f"[ERROR] API error {e}")
+        return
+
+    logging.info(f"[DEBUG] {currency} side={side} → items count: {len(items)}")
+
+    for ad in items:
+        ad_id = ad['id']
+        price = float(ad['price'])
+        payments = set(ad.get('payments', []))
+        logging.info(f"[DEBUG] ad_id={ad_id}, price={price}, payments={payments}")
+
+        if ad_id in notified_ids:
+            continue
+
+        # しきい値判定
+        ok = False
+        if 'max_price' in rule and price <= rule['max_price']:
+            ok = True
+        if 'min_price' in rule and price >= rule['min_price']:
+            ok = True
+
+        if ok:
+            logging.info(f"[DEBUG] 条件マッチ! ad_id={ad_id} を通知予定")
+            # 通知処理…
+
