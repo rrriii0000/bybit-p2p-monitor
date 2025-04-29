@@ -1,4 +1,4 @@
-python-telegram-bot==20.8
+python-telegram-bot==13.15
 bybit-p2p==1.1.0
 requests==2.31.0
 python-dotenv==1.0.1      # .env を使うなら
