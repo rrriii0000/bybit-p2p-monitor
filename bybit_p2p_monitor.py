@@ -48,7 +48,7 @@ rules: List[Dict] = [
     dict(currency="USD", side="1", min_price=1.2),
     dict(currency="USD", side="0", max_price=0.9),
     dict(currency="GBP", side="1", max_price=0.75),
-    dict(currency="GBP", side="0", min_price=0.888),
+    dict(currency="GBP", side="0", min_price=0.81),
 ]
 
 # 通知済み広告IDを保持
