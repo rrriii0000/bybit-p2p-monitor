@@ -43,11 +43,12 @@ if not BYBIT_KEY or not BYBIT_SECRET:
 rules: List[Dict] = [
     dict(currency="JPY", side="0", max_price=140),      # 買い
     dict(currency="JPY", side="1", min_price=165),      # 売り
-    dict(currency="EUR", side="0", max_price=0.863, pm_required=True),
-    dict(currency="EUR", side="1", min_price=1.0,   pm_required=True),
-    dict(currency="USD", side="0", max_price=0.9,   pm_required=True),
-    dict(currency="GBP", side="0", max_price=0.75,  pm_required=True),
-    dict(currency="GBP", side="1", min_price=0.888, pm_required=True),
+    dict(currency="EUR", side="0", max_price=0.863),
+    dict(currency="EUR", side="1", min_price=1.0),
+    dict(currency="USD", side="1", min_price=1.2),
+    dict(currency="USD", side="0", max_price=0.9),
+    dict(currency="GBP", side="0", max_price=0.75),
+    dict(currency="GBP", side="1", min_price=0.888),
 ]
 
 # 通知済み広告IDを保持
