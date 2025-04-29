@@ -72,7 +72,7 @@ def check_rule(rule: Dict):
             tokenId="USDT",
             currencyId=currency,
             side=side,
-            limit=100,
+            size=100,
             page=1
         )
         items = res['result']['items']
