@@ -44,7 +44,7 @@ rules: List[Dict] = [
     dict(currency="JPY", side="0", max_price=140),      # 買い
     dict(currency="JPY", side="1", min_price=165),      # 売り
     dict(currency="EUR", side="0", max_price=0.863),
-    dict(currency="EUR", side="1", min_price=1.0),
+    dict(currency="EUR", side="1", min_price=0.8),
     dict(currency="USD", side="1", min_price=1.2),
     dict(currency="USD", side="0", max_price=0.9),
     dict(currency="GBP", side="0", max_price=0.75),
@@ -59,7 +59,7 @@ def check_rule(rule: Dict):
     logging.debug(f"[RULE] {rule}")
 
     try:
-        res = api.get_online_ads(tokenId="USDT", currencyId=currency, side=side)
+        res = api.get_online_ads(tokenId="USDT", currencyId=currency, side=side, limit=100,)
         items = res['result']['items']
     except Exception as e:
         logging.error(f"[API ERROR] {e}")
