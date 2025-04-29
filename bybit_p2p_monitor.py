@@ -105,20 +105,12 @@ def check_rule(rule: Dict):
 
 def main():
     logging.info("Started monitor…")
+    logging.debug("=== monitor loop START ===")   # 追加行も 4 スペース揃え
+
     while True:
         for rule in rules:
             check_rule(rule)
         time.sleep(INTERVAL)
-          logging.debug("=== monitor loop START ===")  # ここを追加
-          while True:
-          for rule in rules:
-          check_rule(rule)
-          time.sleep(INTERVAL)
-
-if __name__ == "__main__":
-    main()
-
-import datetime
 
 def check_rule(rule: Dict):
     currency, side = rule['currency'], rule['side']
