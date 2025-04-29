@@ -39,7 +39,7 @@ api = P2P(testnet=False,
           api_key=BYBIT_KEY,
           api_secret=BYBIT_SECRET) if BYBIT_KEY and BYBIT_SECRET else P2P(testnet=False)
 
-import logging
+
 
 logging.basicConfig(
     level=logging.DEBUG,             # ← DEBUG に
@@ -64,44 +64,6 @@ rules: List[Dict] = [
 # 通知済み広告IDを保持（メモリ上。永続化する場合はRedis等を使用）
 notified_ids: Set[str] = set()
 
-def check_rule(rule: Dict):
-    currency = rule['currency']
-    side = rule['side']  # 0 buy, 1 sell
-    try:
-        res = api.get_online_ads(tokenId="USDT", currencyId=currency, side=side)
-        items = res['result']['items']
-    except Exception as e:
-        logging.warning("API error %s", e)
-        return
-    for ad in items:
-        ad_id = ad['id']
-        price = float(ad['price'])
-        payments = set(ad.get('payments', []))
-        if ad_id in notified_ids:
-            continue
-        if rule.get('pm_required') and payments.isdisjoint(REVOLUT_PM_IDS):
-            # Revolut必須だが含まれていない
-            continue
-        ok = False
-        if 'max_price' in rule and price <= rule['max_price']:
-            ok = True
-        if 'min_price' in rule and price >= rule['min_price']:
-            ok = True
-        if ok:
-            message = (
-                f"🔥 P2Pレート検知!  \n"
-                f"{'買い' if side=='0' else '売り'} {currency} ⇄ USDT\n"
-                f"価格: {price} {currency}/USDT\n"
-                f"広告主: {ad['nickName']}  (ID {ad_id})\n"
-                f"決済方法IDs: {', '.join(payments)}\n"
-                f"https://www.bybit.com/fiat/trade/otc/{'buy' if side=='0' else 'sell'}/USDT/{currency}"
-            )
-            try:
-                bot.send_message(chat_id=TG_CHAT_ID, text=message)
-                notified_ids.add(ad_id)
-                logging.info("通知済み %s", ad_id)
-            except Exception as e:
-                logging.error("Telegram error %s", e)
 
 def main():
     logging.info("Started monitor…")
@@ -149,5 +111,9 @@ def check_rule(rule: Dict):
                 notified_ids.add(ad_id)
             except Exception as e:
                 logging.error(f"[TG ERROR] {e}")
+
+if __name__ == "__main__":
+    main()   # 無限ループのまま起動し続ける
+
 
 
