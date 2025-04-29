@@ -39,6 +39,13 @@ api = P2P(testnet=False,
           api_key=BYBIT_KEY,
           api_secret=BYBIT_SECRET) if BYBIT_KEY and BYBIT_SECRET else P2P(testnet=False)
 
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,             # ← DEBUG に
+    format="%(asctime)s %(levelname)s %(message)s"
+)
+
 # 監視ルール
 rules: List[Dict] = [
     # 日本円 – 任意の決済方法
@@ -102,6 +109,11 @@ def main():
         for rule in rules:
             check_rule(rule)
         time.sleep(INTERVAL)
+          logging.debug("=== monitor loop START ===")  # ここを追加
+          while True:
+          for rule in rules:
+          check_rule(rule)
+          time.sleep(INTERVAL)
 
 if __name__ == "__main__":
     main()
@@ -110,26 +122,27 @@ import datetime
 
 def check_rule(rule: Dict):
     currency, side = rule['currency'], rule['side']
-    logging.info(f"[{datetime.datetime.now()}] ★ Check rule start: {rule}")
+    logging.debug(f"[RULE] {rule}")  # ① どのルールを処理中か
+
     try:
         res = api.get_online_ads(tokenId="USDT", currencyId=currency, side=side)
         items = res['result']['items']
     except Exception as e:
-        logging.warning(f"[ERROR] API error {e}")
+        logging.error(f"[API ERROR] {e}")
         return
 
-    logging.info(f"[DEBUG] {currency} side={side} → items count: {len(items)}")
+    logging.debug(f"[API] {currency}/{side} → {len(items)} items")
 
     for ad in items:
         ad_id = ad['id']
         price = float(ad['price'])
         payments = set(ad.get('payments', []))
-        logging.info(f"[DEBUG] ad_id={ad_id}, price={price}, payments={payments}")
+        logging.debug(f"[AD] id={ad_id}, price={price}, payments={payments}")  # ② 各広告
 
         if ad_id in notified_ids:
+            logging.debug(f"[SKIP] already notified {ad_id}")
             continue
 
-        # しきい値判定
         ok = False
         if 'max_price' in rule and price <= rule['max_price']:
             ok = True
@@ -137,6 +150,12 @@ def check_rule(rule: Dict):
             ok = True
 
         if ok:
-            logging.info(f"[DEBUG] 条件マッチ! ad_id={ad_id} を通知予定")
-            # 通知処理…
+            logging.debug(f"[MATCH] {ad_id} matches rule")  # ③ マッチした
+            try:
+                bot.send_message(chat_id=TG_CHAT_ID, text="テスト通知")  # 実際の通知
+                logging.debug(f"[SENT] notification for {ad_id}")
+                notified_ids.add(ad_id)
+            except Exception as e:
+                logging.error(f"[TG ERROR] {e}")
+
 
