@@ -72,8 +72,6 @@ def check_rule(rule: Dict):
             tokenId="USDT",
             currencyId=currency,
             side=side,
-            size=100,
-            page=1
         )
         items = res['result']['items']
     except Exception as e:
