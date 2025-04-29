@@ -127,5 +127,17 @@ def main():
             check_rule(rule)
         time.sleep(INTERVAL)
 
+def main():
+    # 起動テスト通知
+    send_telegram("🚀 モニタースタート通知（本番環境テスト）")
+    logging.info("Started monitor…")
+    logging.debug("=== monitor loop START ===")
+
+    while True:
+        for rule in rules:
+            check_rule(rule)
+        time.sleep(INTERVAL)
+
+
 if __name__ == "__main__":
     main()
