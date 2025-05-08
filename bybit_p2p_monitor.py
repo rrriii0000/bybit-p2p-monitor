@@ -55,7 +55,7 @@ rules: List[Dict] = [
     dict(currency="EUR", side="0", max_price=0.82), # EUR: 買い ≤0.863
     dict(currency="EUR", side="1", min_price=1.00),   # EUR: 売り ≥1.0
     dict(currency="USD", side="0", max_price=0.9),   # USD: 買い ≤0.9
-    #dict(currency="USD", side="1", min_price=1.2),   # USD: 売り ≥1.2
+    dict(currency="USD", side="1", min_price=1.2),   # USD: 売り ≥1.2
     dict(currency="GBP", side="0", max_price=0.75),  # GBP: 買い ≤0.75
     dict(currency="GBP", side="1", min_price=0.888), # GBP: 売り ≥0.888
 ]
